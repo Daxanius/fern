@@ -1,0 +1,36 @@
+[package]
+name = "fern"
+version = "0.1.0"
+edition = "2024"
+authors = ["Daxanius"]
+
+[dependencies]
+bootloader = { version = "0.9", features = ["map_physical_memory"]} # A crate that appends a bootloader to our binary and turns it into an ELF that it can load
+volatile = "0.2.6"   # Prevents memory optimizations (that can remove writes) because we may write to memory without expecting it to do things
+spin = "0.5.2"       # A mutex without STD
+x86_64 = "0.14.2"    # Provides abstractions for communicating with ports and the likes
+uart_16550 = "0.2.0" # Serial port abstraction crate (such that we can send date to qemu, of course)
+pic8259 = "0.10.1"   # Interrupt controller interface
+pc-keyboard = "0.7.0" # KEY TRANSLATOR YAAAY (keycode to key)
+linked_list_allocator = "0.9.0" # Premade memory allocator yaay?
+
+[dependencies.lazy_static]
+version = "1.0"
+features = ["spin_no_std"]
+
+[package.metadata.bootimage]
+test-success-exit-code = 33         # (0x10 << 1) | 1
+test-timeout = 300
+test-args = [
+    "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", # Mount a port-mapped device onto the emulated system that we can call to quit qemu after running our tests
+    "-serial", "stdio", # Uses the serial argument to redirect serial output to stdout
+    "-display", "none" # Don't show qemu when running
+]
+
+[[test]]
+name = "should_panic"
+harness = false
+
+[[test]]
+name = "stack_overflow"
+harness = false
