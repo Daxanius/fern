@@ -1,11 +1,12 @@
 [package]
 name = "fern"
 version = "0.1.0"
-edition = "2024"
 authors = ["Daxanius"]
+edition = "2021"
+rust-version = "1.80"
 
 [dependencies]
-bootloader = { version = "0.9", features = ["map_physical_memory"]} # A crate that appends a bootloader to our binary and turns it into an ELF that it can load
+bootloader = { version = "0.9.31", features = ["map_physical_memory"]} # A crate that appends a bootloader to our binary and turns it into an ELF that it can load
 volatile = "0.2.6"   # Prevents memory optimizations (that can remove writes) because we may write to memory without expecting it to do things
 spin = "0.5.2"       # A mutex without STD
 x86_64 = "0.14.2"    # Provides abstractions for communicating with ports and the likes
